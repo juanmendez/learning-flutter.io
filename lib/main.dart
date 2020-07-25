@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 
+// For hot reload to work, we need a stateless widget.
+// Previously we weren't able to automatically see any updates in a hot swap.
 void main() {
-  final title = "Workers of the world, unite!!";
-  final assetImage = "assets/images/workers.jpeg";
-
-  // keeping commas is a good practice for dart-fmt formatter
   runApp(
-    MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.blueGrey.shade200,
-        appBar: AppBar(
-          title: Text(title),
-          backgroundColor: Colors.lightBlue,
-          centerTitle: true,
-        ),
-        body: Center(
-          child: Image(
-            image: AssetImage(assetImage),
-          ),
-        ),
-      ),
-    ),
+    MyApp()
   );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.teal,
+        body: Container(),
+      ),
+    );
+  }
+
 }
