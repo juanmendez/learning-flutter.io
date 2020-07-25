@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   final title = "Workers of the world, unite!!";
-  final url = "https://bit.ly/3jEpj8J";
+  final assetImage = "assets/images/workers.jpeg";
 
   // keeping commas is a good practice for dart-fmt formatter
   runApp(
@@ -16,7 +16,7 @@ void main() {
         ),
         body: Center(
           child: Image(
-            image: NetworkImage(url),
+            image: AssetImage(assetImage),
           ),
         ),
       ),
