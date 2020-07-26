@@ -13,7 +13,11 @@ Learning how to make applications in Flutter
 
 <img width="980" alt="image" src="https://user-images.githubusercontent.com/3371622/88489885-091c9e00-cf5d-11ea-860d-4ac90907e17b.png">
 
+Anytime there is a view which is clipped by the screen, you will see a warning showing you with a yellow zebra background.
+<img width="375" alt="image" src="https://user-images.githubusercontent.com/3371622/88490348-a927f680-cf60-11ea-8a42-269a9843a5f1.png">
+
 Read more:
  - http://flutterdevs.com/blog/know-your-widgets-container-in-flutter/
  - https://medium.com/flutter-community/flutter-layout-cheat-sheet-5363348d037e
+ - https://flutter.dev/docs/development/ui/widgets
 
