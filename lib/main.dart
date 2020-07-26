@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 // For hot reload to work, we need a stateless widget.
 // Previously we weren't able to automatically see any updates in a hot swap.
 void main() {
-  runApp(
-    MyApp()
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -14,9 +12,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.teal,
-        body: Container(),
+        body: SafeArea(
+          child: Center(
+            child: Container(
+              color: Colors.white,
+              child: Text("hello"),
+              padding: EdgeInsets.all(40),
+            ),
+          ),
+        ),
       ),
     );
   }
-
 }
