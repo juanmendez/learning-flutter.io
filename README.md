@@ -2,22 +2,15 @@
 
 Learning how to make applications in Flutter
 
-## Working with Containers, Padding and Margin
+## Working with Custom Fonts
 
-- There are multiple types of containers. Some can take many children such as `Column`, where others can only take one such as `Container`.
-- `SafeArea` is a container that ensures content is bound to be attached below the status bar.
-- Padding and Margin work hand in hand with what's being used by CSS, and Android styling.
-- We can make use of `inspector` -> `hide/debug paint` to show us how margin and padding plays out, see graphic below.
-- We can quickly nest a selected widget by hitting `alt + enter`, there we see a floating menu with multiple containers to choose from.
-- Remember an extra comma added in our arguments set in a function helps us to make our code to format nicely.
+Adding custom fonts is easy. The only difficulty is by copying how to embed a custom fonts in YAML.
+There is a strict identation so we need to ensure we have the correct spacing.
+Just remember in a previous chapter adding images in YAML works the same way for fonts. Although now we need to specify the font family, instead of just including the whole directory.
 
-<img width="980" alt="image" src="https://user-images.githubusercontent.com/3371622/88489885-091c9e00-cf5d-11ea-860d-4ac90907e17b.png">
-
-Anytime there is a view which is clipped by the screen, you will see a warning showing you with a yellow zebra background.
-<img width="375" alt="image" src="https://user-images.githubusercontent.com/3371622/88490348-a927f680-cf60-11ea-8a42-269a9843a5f1.png">
+<img width="372" alt="image" src="https://user-images.githubusercontent.com/3371622/88491486-b1842f80-cf68-11ea-9d3f-41fd7bbbbf14.png">
 
 Read more:
- - http://flutterdevs.com/blog/know-your-widgets-container-in-flutter/
- - https://medium.com/flutter-community/flutter-layout-cheat-sheet-5363348d037e
- - https://flutter.dev/docs/development/ui/widgets
+ - https://fonts.google.com
+ - https://flutter.dev/docs/cookbook/design/fonts
 
