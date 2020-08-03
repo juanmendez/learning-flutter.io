@@ -12,9 +12,13 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  static const PERSON_MIN_HEIGHT = 100.0;
+  static const PERSON_MAX_HEIGHT = 250.0;
+
   Color maleBackground = ThemeColor.inactiveColor;
   Color femaleBackground = ThemeColor.inactiveColor;
   Gender selectedGender;
+  int personHeight = 180;
 
   void updateOnTap(Gender gender) {
     selectedGender = gender;
@@ -31,6 +35,12 @@ class _InputPageState extends State<InputPage> {
       } else {
         femaleBackground = ThemeColor.inactiveColor;
       }
+    });
+  }
+
+  void onSlideChange(double value) {
+    setState(() {
+      personHeight = value.toInt();
     });
   }
 
@@ -66,7 +76,57 @@ class _InputPageState extends State<InputPage> {
             ),
             Expanded(
               child: BmiCard(
-
+                cardChild: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "HEIGHT",
+                      style: Style.bmiLabel,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: <Widget>[
+                        Text(
+                          personHeight.toString(),
+                          style: Style.numberStyle,
+                        ),
+                        Text(
+                          "cm",
+                          style: Style.bmiLabel,
+                        ),
+                      ],
+                    ),
+                    SliderTheme(
+                      /**
+                       * we added here the styling, as we could have done the same in our main.dart file
+                       * by adding sliderThemeData in order to have any slider widget with that style.
+                       *
+                       * It is a good practice to start like this and then whenever
+                       * there are more instances with the same styling switch to global.
+                       */
+                      data: SliderTheme.of(context).copyWith(
+                        thumbColor: ThemeColor.sliderHandle,
+                        overlayColor: ThemeColor.sliderHandleOverlay,
+                        thumbShape: RoundSliderThumbShape(
+                          enabledThumbRadius: 15.0,
+                        ),
+                        overlayShape: RoundSliderOverlayShape(
+                          overlayRadius: 20.0,
+                        ),
+                        activeTrackColor: ThemeColor.sliderActive,
+                      ),
+                      child: Slider(
+                        min: PERSON_MIN_HEIGHT,
+                        value: personHeight.toDouble(),
+                        max: PERSON_MAX_HEIGHT,
+                        inactiveColor: ThemeColor.sliderInactive,
+                        onChanged: onSlideChange,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             Expanded(
