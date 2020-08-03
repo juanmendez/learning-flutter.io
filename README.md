@@ -4,13 +4,13 @@ Learning how to make applications in Flutter
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+We are now moving into refactoring and making reusable components. Some time ago I worked with [Polymer Project](https://www.polymer-project.org/).
+Having new ways of making custom html elements which were components themselves and could handle logic, and styling within while still making those htmls tags with custom attributes.
 
-A few resources to get you started if this is your first Flutter project:
+Flutter is using in some ways that type of approach to making applications in a ravioli structure.
+In this way right now all buttons are of type `BmiCard`. Where as the ones at the top include a widget child.
+In our case we make now an iconic widget to nest of type `Icon Widget`. So Flutter is becoming more fun than I expected in giving opportunities to reuse our code and include logic within.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+As an Android developer I am clung into using constant values for resources, so I also made a `res.dart` file which includes colors, and dimensions in the same way we are used to in our Android applications.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ <img width="404" alt="image" src="https://user-images.githubusercontent.com/3371622/89136383-0986dd00-d4f9-11ea-908b-216e49da73e0.png">
