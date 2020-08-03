@@ -11,6 +11,8 @@ abstract class ThemeColor {
   static const Color sliderHandle = Colors.pink;
 
   static final Color sliderHandleOverlay = Colors.pink.shade200;
+
+  static final Color fabColor = Color(0xFf4C4F5e);
 }
 
 abstract class Style {
@@ -20,11 +22,11 @@ abstract class Style {
   );
 
   static const TextStyle numberStyle = TextStyle(
-    fontSize: 50.0,
+    fontSize: 40.0,
     fontWeight: FontWeight.w900,
   );
 }
 
 abstract class Dimens {
-  static const bottomNavHeight = 80.0;
+  static const bottomNavHeight = 70.0;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:learning_flutter/res.dart';
+import 'package:learning_flutter/round_icon_button.dart';
 
 import 'bmi_card.dart';
 import 'icon_widget.dart';
@@ -19,6 +20,8 @@ class _InputPageState extends State<InputPage> {
   Color femaleBackground = ThemeColor.inactiveColor;
   Gender selectedGender;
   int personHeight = 180;
+  int personWeight = 100;
+  int personAge = 20;
 
   void updateOnTap(Gender gender) {
     selectedGender = gender;
@@ -41,6 +44,18 @@ class _InputPageState extends State<InputPage> {
   void onSlideChange(double value) {
     setState(() {
       personHeight = value.toInt();
+    });
+  }
+
+  void onWeightChange(bool increase) {
+    setState(() {
+      increase ? personWeight++ : personWeight--;
+    });
+  }
+
+  void onAgeChange(bool increase) {
+    setState(() {
+      increase ? personAge++ : personAge--;
     });
   }
 
@@ -133,10 +148,52 @@ class _InputPageState extends State<InputPage> {
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    child: BmiCard(),
+                    child: BmiCard(
+                      cardChild: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("WEIGHT", style: Style.bmiLabel),
+                          Text(personWeight.toString(), style: Style.numberStyle),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              RoundIconButton(
+                                child: Icon(FontAwesomeIcons.minus),
+                                onTap: ()=> onWeightChange(false),
+                              ),
+                              RoundIconButton(
+                                child: Icon(FontAwesomeIcons.plus),
+                                onTap: ()=> onWeightChange(true),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                   Expanded(
-                    child: BmiCard(),
+                    child: BmiCard(
+                      cardChild: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("AGE", style: Style.bmiLabel),
+                          Text(personAge.toString(), style: Style.numberStyle),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              RoundIconButton(
+                                child: Icon(FontAwesomeIcons.minus),
+                                onTap: ()=> onAgeChange(false),
+                              ),
+                              RoundIconButton(
+                                child: Icon(FontAwesomeIcons.plus),
+                                onTap: ()=> onAgeChange(true),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
