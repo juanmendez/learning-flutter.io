@@ -21,7 +21,7 @@ class IconWidget extends StatelessWidget {
         ),
         Text(
           text,
-          style: Style.bmiLabel,
+          style: BmiStyle.bmiLabel,
         )
       ],
     );

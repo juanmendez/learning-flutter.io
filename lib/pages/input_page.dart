@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:learning_flutter/pages/results_page.dart';
 import 'package:learning_flutter/res.dart';
-import 'package:learning_flutter/round_icon_button.dart';
-
-import 'bmi_card.dart';
-import 'icon_widget.dart';
+import 'package:learning_flutter/widgets/bmi_card.dart';
+import 'package:learning_flutter/widgets/bottom_button.dart';
+import 'package:learning_flutter/widgets/icon_widget.dart';
+import 'package:learning_flutter/widgets/round_icon_button.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -59,6 +60,20 @@ class _InputPageState extends State<InputPage> {
     });
   }
 
+  void onSubmit() {
+    // Navigator.pushNamed(context, "/result");
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultsPage(
+          personWeight: personWeight,
+          personHeight: personHeight,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +111,7 @@ class _InputPageState extends State<InputPage> {
                   children: <Widget>[
                     Text(
                       "HEIGHT",
-                      style: Style.bmiLabel,
+                      style: BmiStyle.bmiLabel,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -105,11 +120,11 @@ class _InputPageState extends State<InputPage> {
                       children: <Widget>[
                         Text(
                           personHeight.toString(),
-                          style: Style.numberStyle,
+                          style: BmiStyle.numberStyle,
                         ),
                         Text(
                           "cm",
-                          style: Style.bmiLabel,
+                          style: BmiStyle.bmiLabel,
                         ),
                       ],
                     ),
@@ -152,18 +167,19 @@ class _InputPageState extends State<InputPage> {
                       cardChild: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("WEIGHT", style: Style.bmiLabel),
-                          Text(personWeight.toString(), style: Style.numberStyle),
+                          Text("WEIGHT", style: BmiStyle.bmiLabel),
+                          Text(personWeight.toString(),
+                              style: BmiStyle.numberStyle),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               RoundIconButton(
                                 child: Icon(FontAwesomeIcons.minus),
-                                onTap: ()=> onWeightChange(false),
+                                onTap: () => onWeightChange(false),
                               ),
                               RoundIconButton(
                                 child: Icon(FontAwesomeIcons.plus),
-                                onTap: ()=> onWeightChange(true),
+                                onTap: () => onWeightChange(true),
                               )
                             ],
                           )
@@ -176,18 +192,19 @@ class _InputPageState extends State<InputPage> {
                       cardChild: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("AGE", style: Style.bmiLabel),
-                          Text(personAge.toString(), style: Style.numberStyle),
+                          Text("AGE", style: BmiStyle.bmiLabel),
+                          Text(personAge.toString(),
+                              style: BmiStyle.numberStyle),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
                               RoundIconButton(
                                 child: Icon(FontAwesomeIcons.minus),
-                                onTap: ()=> onAgeChange(false),
+                                onTap: () => onAgeChange(false),
                               ),
                               RoundIconButton(
                                 child: Icon(FontAwesomeIcons.plus),
-                                onTap: ()=> onAgeChange(true),
+                                onTap: () => onAgeChange(true),
                               )
                             ],
                           )
@@ -198,11 +215,10 @@ class _InputPageState extends State<InputPage> {
                 ],
               ),
             ),
-            Container(
-              color: Colors.pink,
-              margin: EdgeInsets.only(top: 10),
-              height: Dimens.bottomNavHeight,
-            )
+            BottomButton(
+              label: "CALCULATE",
+              onTap: onSubmit,
+            ),
           ],
         ),
       ),

@@ -1,9 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/res.dart';
-
-import 'main.dart';
 
 class BmiCard extends StatelessWidget {
   // A key is an identifier for Widgets, Elements and SemanticNodes.
