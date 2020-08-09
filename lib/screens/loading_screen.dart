@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:learning_flutter/services/location.dart';
-import 'package:learning_flutter/services/networking.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:learning_flutter/screens/location_screen.dart';
+import 'package:learning_flutter/services/weather.dart';
+import 'package:learning_flutter/utilities/no_transition_route.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,39 +10,50 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  var location = 'Get Location';
+  var networkStatus = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+  }
 
   void getLocation() async {
-    // any code under can be executed, as Future is handle asynchronously
-    // there is no need to set getLocation with async
-    /*
-    Location.getLocation().then((value) {
+    final result = await WeatherModel.getWeatherByLocation();
+
+    if (result.data != null) {
+      // pushReplacement simply removes current screen from the stack
+      // replacing next screen, and avoid swiping back here
+      Navigator.pushReplacement(context, NoSlidingRoute(builder: (context) {
+        return LocationScreen(result.data);
+      }));
+    } else {
       setState(() {
-        location = value.toString();
+        networkStatus = "Network error";
       });
-    });*/
-
-    // here await halts until the promise is release and continues executing
-    final Position position = await Location.getLocation();
-    final result = await NetworkHelper.getWeatherResult(position);
-
-    setState(() {
-      if (result.data != null) {
-        location = "${result.data.coord.lat} : ${result.data.coord.lon}";
-      } else {
-        location = "Network error";
-      }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: RaisedButton(
-          color: Colors.blue,
-          onPressed: () => getLocation(),
-          child: Text(location),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: SpinKitDoubleBounce(
+                color: Colors.white,
+                size: 100.0,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(networkStatus),
+              ),
+            )
+          ],
         ),
       ),
     );
