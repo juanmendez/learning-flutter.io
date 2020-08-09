@@ -1,7 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:learning_flutter/services/location.dart';
+import 'package:learning_flutter/services/networking.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -12,12 +12,25 @@ class _LoadingScreenState extends State<LoadingScreen> {
   var location = 'Get Location';
 
   void getLocation() async {
-    // make sure to select location under simulator, as the default is none.
-    // Android has one already defined, but you can also update the emulator current location
-    final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+    // any code under can be executed, as Future is handle asynchronously
+    // there is no need to set getLocation with async
+    /*
+    Location.getLocation().then((value) {
+      setState(() {
+        location = value.toString();
+      });
+    });*/
+
+    // here await halts until the promise is release and continues executing
+    final Position position = await Location.getLocation();
+    final result = await NetworkHelper.getWeatherResult(position);
 
     setState(() {
-      location = position.toString();
+      if (result.data != null) {
+        location = "${result.data.coord.lat} : ${result.data.coord.lon}";
+      } else {
+        location = "Network error";
+      }
     });
   }
 
@@ -27,7 +40,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       body: Center(
         child: RaisedButton(
           color: Colors.blue,
-          onPressed: ()=> getLocation(),
+          onPressed: () => getLocation(),
           child: Text(location),
         ),
       ),
