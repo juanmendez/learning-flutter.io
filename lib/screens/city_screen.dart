@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:learning_flutter/screens/loading_screen.dart';
+import 'package:learning_flutter/utilities/constants.dart';
 
 class CityScreen extends StatefulWidget {
   @override
@@ -7,6 +8,27 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
+  String city = "";
+
+  void onChange(String value) {
+    city = value.trim();
+  }
+
+  void submit() {
+    if (city.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return LoadingScreen(city: city,);
+        }),
+      );
+    }
+  }
+
+  void goBack() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +46,7 @@ class _CityScreenState extends State<CityScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: goBack,
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 50.0,
@@ -33,12 +55,17 @@ class _CityScreenState extends State<CityScreen> {
               ),
               Container(
                 padding: EdgeInsets.all(20.0),
-                child: null,
+                child: TextField(
+                  decoration: kTextFieldInputDecoration,
+                  style: TextStyle(color: Colors.black),
+                  onChanged: onChange,
+                ),
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: submit,
                 child: Text(
                   'Get Weather',
+                  style: kButtonTextStyle,
                 ),
               ),
             ],

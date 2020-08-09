@@ -16,10 +16,25 @@ class WeatherModel {
     return result;
   }
 
-  static Future<NetworkResult<WeatherResult>> getWeatherResult(
-    Position position,
-  ) async {
-    final String request = Strings.getLocation(
+  static Future<NetworkResult<WeatherResult>> getWeatherByCity(
+      String city) async {
+    final String request = Strings.getWeatherCityUrl(city);
+    final response = await http.get(request);
+
+    NetworkResult<WeatherResult> result;
+
+    if (response.statusCode == 200) {
+      final weatherResult = WeatherResult.fromRawJson(response.body);
+      result = NetworkResult(data: weatherResult);
+    } else {
+      result = NetworkResult(exception: HttpException("network error"));
+    }
+
+    return result;
+  }
+
+  static Future<NetworkResult<WeatherResult>> getWeatherResult(Position position) async {
+    final String request = Strings.getWeatherLocationUrl(
       position.latitude,
       position.longitude,
     );
@@ -61,11 +76,11 @@ class WeatherModel {
   }
 
   static String getMessage(int temp) {
-    if (temp > 25) {
+    if (temp > 80) {
       return 'It\'s 🍦 time';
-    } else if (temp > 20) {
+    } else if (temp > 60) {
       return 'Time for shorts and 👕';
-    } else if (temp < 10) {
+    } else if (temp < 30) {
       return 'You\'ll need 🧣 and 🧤';
     } else {
       return 'Bring a 🧥 just in case';

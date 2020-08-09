@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/model/models.dart';
+import 'package:learning_flutter/screens/city_screen.dart';
 import 'package:learning_flutter/screens/loading_screen.dart';
 import 'package:learning_flutter/services/weather.dart';
 import 'package:learning_flutter/utilities/Strings.dart';
 import 'package:learning_flutter/utilities/constants.dart';
-import 'package:learning_flutter/utilities/no_transition_route.dart';
+import 'package:learning_flutter/utilities/no_sliding_route.dart';
 import 'package:sprintf/sprintf.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -12,11 +13,11 @@ class LocationScreen extends StatefulWidget {
 
   LocationScreen(this.weatherResult);
 
-  @override _LocationScreenState createState() => _LocationScreenState();
+  @override
+  _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-
   int temperature;
   String condition;
   String message;
@@ -34,7 +35,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
     var weather = weatherResult.weather;
 
-    if(weather.isNotEmpty) {
+    if (weather.isNotEmpty) {
       int id = weather.first.id;
       condition = WeatherModel.getWeatherIcon(id);
     } else {
@@ -47,9 +48,21 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateWeatherLocation() {
-    Navigator.pushReplacement(context, NoSlidingRoute(builder: (context) {
-      return LoadingScreen();
-    }));
+    Navigator.pushReplacement(
+      context,
+      NoSlidingRoute(builder: (context) {
+        return LoadingScreen();
+      }),
+    );
+  }
+
+  void searchByCity() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return CityScreen();
+      }),
+    );
   }
 
   @override
@@ -83,7 +96,7 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: searchByCity,
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,

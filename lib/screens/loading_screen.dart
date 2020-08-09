@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:learning_flutter/model/models.dart';
 import 'package:learning_flutter/screens/location_screen.dart';
+import 'package:learning_flutter/services/network_result.dart';
 import 'package:learning_flutter/services/weather.dart';
-import 'package:learning_flutter/utilities/no_transition_route.dart';
+import 'package:learning_flutter/utilities/constants.dart';
+import 'package:learning_flutter/utilities/no_sliding_route.dart';
 
 class LoadingScreen extends StatefulWidget {
+  final String city;
+
+  LoadingScreen({this.city = ""});
+
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
@@ -19,7 +26,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocation() async {
-    final result = await WeatherModel.getWeatherByLocation();
+    NetworkResult<WeatherResult> result;
+
+    if (widget.city.isNotEmpty) {
+      result = await WeatherModel.getWeatherByCity(widget.city);
+    } else {
+      result = await WeatherModel.getWeatherByLocation();
+    }
 
     if (result.data != null) {
       // pushReplacement simply removes current screen from the stack
@@ -29,7 +42,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
       }));
     } else {
       setState(() {
-        networkStatus = "Network error";
+        if (widget.city.isNotEmpty) {
+          networkStatus = "Cannot find weather for ${widget.city}.";
+        } else {
+          networkStatus = "There is a network or location issue.";
+        }
+
+        networkStatus += "\nPress on the circle to try again.";
       });
     }
   }
@@ -41,16 +60,23 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: Stack(
           children: <Widget>[
             Center(
-              child: SpinKitDoubleBounce(
-                color: Colors.white,
-                size: 100.0,
+              child: GestureDetector(
+                child: SpinKitDoubleBounce(
+                  color: Colors.white,
+                  size: 100.0,
+                ),
+                onTap: getLocation,
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Text(networkStatus),
+                child: Text(
+                  networkStatus,
+                  style: kErrorTextStyle,
+                  textAlign: TextAlign.center,
+                ),
               ),
             )
           ],
