@@ -1,7 +1,12 @@
+import 'dart:developer';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:learning_flutter/model/models.dart';
+import 'package:learning_flutter/model/photo_models.dart';
+import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/screens/city_screen.dart';
 import 'package:learning_flutter/screens/loading_screen.dart';
+import 'package:learning_flutter/services/network_result.dart';
 import 'package:learning_flutter/services/weather.dart';
 import 'package:learning_flutter/utilities/Strings.dart';
 import 'package:learning_flutter/utilities/constants.dart';
@@ -21,6 +26,7 @@ class _LocationScreenState extends State<LocationScreen> {
   int temperature;
   String condition;
   String message;
+  String imageUrl;
 
   @override
   void initState() {
@@ -45,6 +51,21 @@ class _LocationScreenState extends State<LocationScreen> {
     final cityName = weatherResult.name;
     final activity = WeatherModel.getMessage(temperature);
     message = sprintf(Strings.TIME_IN_LOCAtION, [activity, cityName]);
+
+    getPhotoByCity(cityName);
+  }
+
+  void getPhotoByCity(String city) async {
+    NetworkResult<PhotoResult> photoResult = await WeatherModel.getPhoto(city);
+
+    setState(() {
+      imageUrl = "";
+      if(photoResult.data != null) {
+        if(photoResult.data.photos.isNotEmpty) {
+          imageUrl = photoResult.data.photos.first.src.large ?? "";
+        }
+      }
+    });
   }
 
   void updateWeatherLocation() {
@@ -65,20 +86,38 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
+  BoxDecoration getBoxDecoration() {
+    ImageProvider provider;
+
+    if(imageUrl != null) {
+      if(imageUrl.isNotEmpty) {
+        provider = NetworkImage(imageUrl);
+      } else if(imageUrl.isEmpty){
+        provider = AssetImage('assets/images/location_background.jpg');
+      }
+    }
+
+    if(provider != null) {
+      return BoxDecoration(
+        image: DecorationImage(
+          image: provider,
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.white.withOpacity(0.8),
+            BlendMode.dstATop,
+          ),
+        ),
+      );
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/location_background.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.white.withOpacity(0.8),
-              BlendMode.dstATop,
-            ),
-          ),
-        ),
+        decoration: getBoxDecoration(),
         constraints: BoxConstraints.expand(),
         child: SafeArea(
           child: Column(

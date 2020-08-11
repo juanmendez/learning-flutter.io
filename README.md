@@ -4,23 +4,18 @@ Learning how to make applications in Flutter
 
 ## Getting Started
 
-Lifecycle of a StatefulWidget's State
-- initState, is the initial state. This is the best place to bootstrap rather than every time the widget redraws itself
-- build, think of it as a redrawing state based on changes happening, so `initState` is a good place to bootstrap your code only once.
-- deactivated, whenever the widgets is detached from the widget tree.
+Doing something fun with the weather.
 
-Network communication
-- `http.dart` can be used to make network calls.
-  - include it as `'http.dart' as http;`, so you access `http.get` instead of just `get`.
-- `convert.dart` can be used for parsing json strings
-  - I am not going to be parsing code myself as it's quite tedious and libraries such as `Retrofit` do a better job. 
-  But for Dart I can use [`Quicktype`](https://github.com/quicktype/quicktype) which can generate the classes mirroring the json data. 
-  It also can generate the code needed to parse the json object.
+As the weather api provides the city name based on its location tracking. I thought of also combining that
+functionality with searching for an image from [Pexels](https://www.pexels.com/). In a similar fashion I needed to make
+a network call along with a header wrapping an authenticated api key provided by Pexels.
 
-`Quicktype`
-  
-<img width="1332" alt="image" src="https://user-images.githubusercontent.com/3371622/89356434-657d6d00-d683-11ea-82d2-4d20e63f5bf2.png">
+Every time the user searches for a city, or its current location, the photo api searches using the city name, and
+the nice thing is the photo collection being returned only comes with one photo. If there are no photos
+or a network issue, then the Golden Gate picture stored in assets gets displayed.
 
-The tutorial shows us one `LoadingScreen` and `LocationScreen`. It is a bit strange the first screen loads the weather, and then assigns it to the second screen.
-That to me looked odd to be in one destination to load data and then just pass it.
+Here is a search based on The Plurinational State of Bolivia and Chicago, the Windy City!
 
+<img width="472" alt="image" src="https://user-images.githubusercontent.com/3371622/89745224-12872980-da78-11ea-98b3-159b89ae0ca6.png">
+<img width="472" alt="image" src="https://user-images.githubusercontent.com/3371622/89745211-f71c1e80-da77-11ea-9bcf-0fc88db421cd.png">
+<img width="472" alt="image" src="https://user-images.githubusercontent.com/3371622/89745217-026f4a00-da78-11ea-8ff4-990f57c087ad.png">

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:learning_flutter/model/models.dart';
+import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/screens/location_screen.dart';
 import 'package:learning_flutter/services/network_result.dart';
 import 'package:learning_flutter/services/weather.dart';

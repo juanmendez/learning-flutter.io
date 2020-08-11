@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:learning_flutter/model/models.dart';
+import 'package:learning_flutter/model/photo_models.dart';
+import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/utilities/Strings.dart';
 
 import 'location.dart';
@@ -12,6 +13,24 @@ class WeatherModel {
   static Future<NetworkResult<WeatherResult>> getWeatherByLocation() async {
     final Position position = await Location.getLocation();
     final result = await WeatherModel.getWeatherResult(position);
+
+    return result;
+  }
+
+  // https://www.pexels.com/api/documentation/#photos-search
+  static Future<NetworkResult<PhotoResult>> getPhoto(
+      String city) async {
+    final String request = Strings.getPhotoByCity(city);
+    final response = await http.get(request, headers: Strings.getPhotoHeader());
+
+    NetworkResult<PhotoResult> result;
+
+    if (response.statusCode == 200) {
+      final photoResult = PhotoResult.fromRawJson(response.body);
+      result = NetworkResult(data: photoResult);
+    } else {
+      result = NetworkResult(exception: HttpException("network error"));
+    }
 
     return result;
   }
