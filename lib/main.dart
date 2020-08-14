@@ -59,7 +59,10 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // 0. we get the value
     // 1. we register this widget as a listener
-    final counter = Provider.of<Counter>(context);
+    // 2. ensure is not going to re build causing other widgets to the same
+    // 2. that's why we will use the Consumer widget to make this the
+    // 2. only widget below for change
+    final counter = Provider.of<Counter>(context, listen: false);
 
     final flavor = Provider.of<Flavor>(context);
     return Scaffold(
@@ -73,9 +76,13 @@ class MyHomePage extends StatelessWidget {
             Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '${counter.value}',
-              style: Theme.of(context).textTheme.headline4,
+            Consumer<Counter>(
+              builder: (context, counter, child) {
+                return Text(
+                  '${counter.value}',
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
             ),
           ],
         ),
