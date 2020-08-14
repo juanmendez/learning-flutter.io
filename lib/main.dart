@@ -23,7 +23,10 @@ class AppProvider extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        Provider<Flavor>.value(value: Flavor.dev),
+        ChangeNotifierProvider<FlavorHolder>(
+          key: Key('flavor-notifier'),
+          create: (context) => FlavorHolder(),
+        ),
         ChangeNotifierProvider<Counter>(
           key: Key('counter-notifier'),
           create: (context) => Counter(),
@@ -57,24 +60,37 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 0. we get the value
-    // 1. we register this widget as a listener
-    // 2. ensure is not going to re build causing other widgets to the same
-    // 2. that's why we will use the Consumer widget to make this the
-    // 2. only widget below for change
-    final counter = Provider.of<Counter>(context, listen: false);
+    return Consumer<FlavorHolder>(
+      builder: (_, holder, __) {
+        if (holder.flavor == Flavor.increment) {
+          return PlusCounter();
+        } else {
+          return MinusCounter();
+        }
+      },
+    );
+  }
+}
 
-    final flavor = Provider.of<Flavor>(context);
+class PlusCounter extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final counter = Provider.of<Counter>(context, listen: false);
+    final holder = Provider.of<FlavorHolder>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text(flavor.toString()),
+        title: Consumer<FlavorHolder>(
+          builder: (_, holder, __) {
+            return Text(holder.flavor.toString());
+          },
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'You have pushed 3 times to switch:',
             ),
             Consumer<Counter>(
               builder: (context, counter, child) {
@@ -88,9 +104,62 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: counter.increment,
+        onPressed: () {
+          counter.increment();
+
+          if(counter.value == 3) {
+            holder.change();
+          }
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class MinusCounter extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final counter = Provider.of<Counter>(context, listen: false);
+    final holder = Provider.of<FlavorHolder>(context, listen: false);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Consumer<FlavorHolder>(
+          builder: (_, holder, __) {
+            return Text(holder.flavor.toString());
+          },
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'You have pushed three times to switch:',
+            ),
+            Consumer<Counter>(
+              builder: (context, counter, child) {
+                return Text(
+                  '${counter.value}',
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          counter.decrement();
+
+          if(counter.value == 0) {
+            holder.change();
+          }
+        },
+        tooltip: 'Decrement',
+        child: Icon(Icons.radio),
       ),
     );
   }
