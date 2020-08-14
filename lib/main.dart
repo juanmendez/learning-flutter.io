@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:learning_flutter/counter.dart';
 import 'package:provider/provider.dart';
 
 import 'flavor.dart';
@@ -24,9 +23,9 @@ class AppProvider extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<Flavor>.value(value: Flavor.dev),
-        ChangeNotifierProvider<Counter>(
+        ChangeNotifierProvider<ValueNotifier<int>>(
           key: Key('counter-notifier'),
-          create: (context) => Counter(),
+          create: (context) => ValueNotifier<int>(0),
         )
       ],
       child: child,
@@ -62,7 +61,7 @@ class MyHomePage extends StatelessWidget {
     // 2. ensure is not going to re build causing other widgets to the same
     // 2. that's why we will use the Consumer widget to make this the
     // 2. only widget below for change
-    final counter = Provider.of<Counter>(context, listen: false);
+    final counter = Provider.of<ValueNotifier<int>>(context, listen: false);
 
     final flavor = Provider.of<Flavor>(context);
     return Scaffold(
@@ -76,7 +75,7 @@ class MyHomePage extends StatelessWidget {
             Text(
               'You have pushed the button this many times:',
             ),
-            Consumer<Counter>(
+            Consumer<ValueNotifier<int>>(
               builder: (context, counter, child) {
                 return Text(
                   '${counter.value}',
@@ -88,7 +87,7 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: counter.increment,
+        onPressed: ()=>counter.value++,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
