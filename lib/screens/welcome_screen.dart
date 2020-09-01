@@ -19,26 +19,21 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
 
     controller = AnimationController(
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 2),
       vsync: this,
     );
 
     // can't use upper-bound beyond 1.0
-    animation = CurvedAnimation(parent: controller, curve: Curves.easeInBack);
+    animation = ColorTween(
+      begin: Colors.grey,
+      end: Colors.white,
+    ).animate(controller);
 
     controller.forward();
 
     controller.addListener(() {
       d.log('controller.value: ${controller.value}');
       setState(() {});
-    });
-
-    controller.addStatusListener((status) {
-      if( status == AnimationStatus.completed) {
-        controller.reverse(from: 1.0 );
-      } else if(status == AnimationStatus.dismissed) {
-        controller.forward();
-      }
     });
   }
 
@@ -48,11 +43,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.dispose();
   } // when the screen is disposed, ensure we dispose the controller
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: animation.value, // odd, no more controller.value
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -65,7 +59,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   tag: 'logo',
                   child: Container(
                     child: Image.asset('assets/images/logo.png'),
-                    height: controller.value * 100,
+                    height: 60,
                   ),
                 ),
                 Text(
