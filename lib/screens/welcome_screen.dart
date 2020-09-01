@@ -32,7 +32,22 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       d.log('controller.value: ${controller.value}');
       setState(() {});
     });
+
+    controller.addStatusListener((status) {
+      if( status == AnimationStatus.completed) {
+        controller.reverse(from: 1.0 );
+      } else if(status == AnimationStatus.dismissed) {
+        controller.forward();
+      }
+    });
   }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  } // when the screen is disposed, ensure we dispose the controller
+
 
   @override
   Widget build(BuildContext context) {
