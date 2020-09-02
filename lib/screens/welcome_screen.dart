@@ -2,6 +2,7 @@ import 'dart:developer' as d;
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_flutter/screens/widgets/pill_button.dart';
 
 import '../constants.dart';
 
@@ -75,41 +76,19 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             SizedBox(
               height: 48.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(Routes.LOGIN_ROUTE);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
+            PillButton(
+              'Log In',
+              Colors.lightBlueAccent,
+                  () {
+                Navigator.of(context).pushNamed(Routes.LOGIN_ROUTE);
+              },
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(Routes.REGISTRATION_ROUTE);
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                  ),
-                ),
-              ),
+            PillButton(
+              'Register',
+              Colors.blueAccent,
+              () {
+                Navigator.of(context).pushNamed(Routes.REGISTRATION_ROUTE);
+              },
             ),
           ],
         ),
