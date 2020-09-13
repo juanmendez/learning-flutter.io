@@ -2,6 +2,8 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_flutter/models/currency_exchange.dart';
+import 'package:learning_flutter/services/currency_service.dart';
 
 import 'coin_data.dart';
 
@@ -12,6 +14,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = "USD";
+  String rate = "";
 
   Widget getDropdown(Function(String) handler) {
     List<DropdownMenuItem> getDropdownItems() {
@@ -48,6 +51,16 @@ class _PriceScreenState extends State<PriceScreen> {
     }
   }
 
+  void requestExchange() async {
+    final exchange = await CurrencyService.convert(selectedCurrency);
+
+    if(exchange != null) {
+      rate = exchange.rate;
+    } else{
+      rate = "No rate available";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +82,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? $selectedCurrency',
+                  '1 USD = ? $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -79,6 +92,7 @@ class _PriceScreenState extends State<PriceScreen> {
               ),
             ),
           ),
+          Center(child: Text(rate, style: TextStyle(color: Colors.black, fontSize: 44),)),
           Container(
             height: 150.0,
             alignment: Alignment.center,
@@ -87,6 +101,7 @@ class _PriceScreenState extends State<PriceScreen> {
             child: getDropdown((currency) {
               setState(() {
                 selectedCurrency = currency;
+                requestExchange();
               });
             }),
           ),
