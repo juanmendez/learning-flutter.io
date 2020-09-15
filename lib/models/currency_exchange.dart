@@ -35,4 +35,9 @@ class CurrencyExchange {
     "rate": rate,
     "timestamp": timestamp.toIso8601String(),
   };
+
+  @override
+  String toString() {
+    return 'CurrencyExchange currency: $currency, rate: $rate, timestap ${timestamp.toIso8601String()}';
+  }
 }

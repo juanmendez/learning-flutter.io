@@ -5,12 +5,18 @@ import 'package:learning_flutter/models/currency_exchange.dart';
 class CurrencyService {
   static final _CURRENCIES = <String, CurrencyExchange>{};
 
+  static Future<List<CurrencyExchange>> getCurrencies() async {
+    final url = Strings.getConversionUrl();
+    final json = await http.get(url);
+
+    return CurrencyExchange.fromRawList(json.body);
+  }
+
   static Future<CurrencyExchange> convert(String selectedCurrency) async {
     if(_CURRENCIES.isEmpty) {
-      final url = Strings.getConversionUrl();
-      final json = await http.get(url);
+      final currencies = await getCurrencies();
 
-      CurrencyExchange.fromRawList(json.body).forEach((element) {
+      currencies.forEach((element) {
         _CURRENCIES[element.currency] = element;
       });
     }
