@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/screens/welcome_screen.dart';
 import 'package:learning_flutter/screens/login_screen.dart';
@@ -6,9 +7,15 @@ import 'package:learning_flutter/screens/chat_screen.dart';
 
 import 'constants.dart';
 
-void main() => runApp(FlashChat());
+void main() async {
+  // https://stackoverflow.com/a/63492262
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(FlashChat());
+}
 
 class FlashChat extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

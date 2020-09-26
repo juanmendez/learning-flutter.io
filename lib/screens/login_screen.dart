@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/screens/widgets/pill_button.dart';
 
@@ -9,6 +10,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String _email, _password;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void _login() {
+    if (_email != null && _password != null) {
+      _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      ).then((value) {
+        if (value.user != null) {
+          Navigator.pushNamed(context, Routes.CHAT_ROUTE);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,26 +48,36 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextField(
               onChanged: (value) {
-                //Do something with the user input.
+                _email = value;
               },
-              decoration: kInputDecoration.copyWith(hintText: 'Enter your email'),
+              decoration: kInputDecoration.copyWith(
+                hintText: 'Enter your email',
+              ),
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(
               height: 8.0,
             ),
             TextField(
               onChanged: (value) {
-                //Do something with the user input.
+                _password = value;
               },
-              decoration: kInputDecoration.copyWith(hintText: 'Enter your password'),
+              decoration: kInputDecoration.copyWith(
+                hintText: 'Enter your password',
+              ),
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+              obscureText: true,
             ),
             SizedBox(
               height: 24.0,
             ),
             PillButton(
               'Log In',
-                Colors.lightBlueAccent,
-                ()=> null,
+              Colors.lightBlueAccent,
+              _login,
             ),
           ],
         ),

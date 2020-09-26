@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/constants.dart';
 import 'package:learning_flutter/screens/widgets/pill_button.dart';
@@ -8,6 +10,20 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String _email, _password;
+
+  void _register() {
+    _auth.createUserWithEmailAndPassword(
+      email: _email,
+      password: _password,
+    ).then((newUser) {
+      if (newUser != null) {
+        Navigator.pushNamed(context, Routes.CHAT_ROUTE);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,18 +46,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             TextField(
               onChanged: (value) {
-                //Do something with the user input.
+                _email = value;
               },
-              decoration: kInputDecoration.copyWith(hintText: 'Enter your email'),
+              decoration:
+                  kInputDecoration.copyWith(hintText: 'Enter your email'),
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(
               height: 8.0,
             ),
             TextField(
               onChanged: (value) {
-                //Do something with the user input.
+                _password = value;
               },
-              decoration: kInputDecoration.copyWith(hintText: 'Enter your password'),
+              decoration:
+                  kInputDecoration.copyWith(hintText: 'Enter your password'),
+              style: TextStyle(color: Colors.black),
+              textAlign: TextAlign.center,
+              obscureText: true,
             ),
             SizedBox(
               height: 24.0,
@@ -49,7 +73,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             PillButton(
               'Register',
               Colors.blueAccent,
-                  () => null,
+              _register,
             ),
           ],
         ),
