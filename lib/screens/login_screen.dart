@@ -23,7 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _email,
         password: _password,
       ).then((value) {
-        showSpinner = true;
+        _isLoading(false);
+
         if (value.user != null) {
           Navigator.pushNamed(context, Routes.CHAT_ROUTE);
         }

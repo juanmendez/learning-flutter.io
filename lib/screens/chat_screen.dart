@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:learning_flutter/model/message.dart';
 import '../constants.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -11,6 +14,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  StreamSubscription<QuerySnapshot> _subscription;
   User _loggedInUser;
   String messageText;
 
@@ -20,11 +24,19 @@ class _ChatScreenState extends State<ChatScreen> {
     _loadUser();
   }
 
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   void _loadUser() {
     final user = _auth.currentUser;
 
     if(user != null) {
       _loggedInUser = user;
+      getMessages();
     }
   }
 
@@ -35,6 +47,19 @@ class _ChatScreenState extends State<ChatScreen> {
         Routes.WELCOME_ROUTE,
         (Route route) => false,
       );
+    });
+  }
+
+  void getMessages() {
+    _subscription?.cancel();
+    _subscription = _firestore.collection("messages").snapshots().listen((event) {
+      event.docs.forEach((doc) {
+        /// As we are learning how to work with both Freeze and Json-Serializable
+        /// We are making an instance from json and also printing it back to json.
+        final message = Message.fromJson(doc.data());
+        print("message received $message");
+        print("message in json ${message.toJson()}");
+      });
     });
   }
 
