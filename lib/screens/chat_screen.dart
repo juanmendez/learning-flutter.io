@@ -14,7 +14,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
-  StreamSubscription<QuerySnapshot> _subscription;
   User _loggedInUser;
   String messageText;
 
@@ -24,19 +23,14 @@ class _ChatScreenState extends State<ChatScreen> {
     _loadUser();
   }
 
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    super.dispose();
-  }
-
   void _loadUser() {
     final user = _auth.currentUser;
 
-    if(user != null) {
+    if (user != null) {
       _loggedInUser = user;
-      getMessages();
+      _getMessages();
+    } else {
+      _logout();
     }
   }
 
@@ -50,18 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void getMessages() {
-    _subscription?.cancel();
-    _subscription = _firestore.collection("messages").snapshots().listen((event) {
-      event.docs.forEach((doc) {
-        /// As we are learning how to work with both Freeze and Json-Serializable
-        /// We are making an instance from json and also printing it back to json.
-        final message = Message.fromJson(doc.data());
-        print("message received $message");
-        print("message in json ${message.toJson()}");
-      });
-    });
-  }
+  void _getMessages() {}
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +53,8 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.close),
-              onPressed: _logout,
+            icon: Icon(Icons.close),
+            onPressed: _logout,
           ),
         ],
         title: Text('⚡️Chat'),
@@ -82,6 +65,37 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder(
+              stream: _firestore.collection("messages").snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Text> widgets = [];
+                  final docs = snapshot.data.documents;
+
+                  for (var doc in docs) {
+                    final message = Message.fromJson(doc.data());
+                    widgets.add(
+                      Text(
+                        '${message.text} from ${message.sender}',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: widgets,
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlueAccent,
+                    ),
+                  );
+                }
+              },
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -97,10 +111,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      _firestore.collection("messages").add( {
-                        "sender": _loggedInUser.email,
-                        "text": messageText
-                      });
+                      _firestore.collection("messages").add(
+                          {"sender": _loggedInUser.email, "text": messageText});
                     },
                     child: Text(
                       'Send',
