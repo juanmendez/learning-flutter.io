@@ -80,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   FlatButton(
                     onPressed: () {
                       firestore.collection("messages").add(
-                        {"sender": loggedInUser.email, "text": messageText},
+                        Message(sender: loggedInUser.email, text: messageText, dateTime: DateTime.now()).toJson()
                       );
 
                       messageTextController.clear();
@@ -106,7 +106,7 @@ class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _firestore.collection("messages").snapshots(),
+      stream: _firestore.collection("messages").orderBy('dateTime', descending: true).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Widget> widgets = [];

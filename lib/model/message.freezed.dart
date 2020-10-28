@@ -17,10 +17,11 @@ class _$MessageTearOff {
   const _$MessageTearOff();
 
 // ignore: unused_element
-  _Message call({String sender, String text}) {
+  _Message call({String sender, String text, DateTime dateTime}) {
     return _Message(
       sender: sender,
       text: text,
+      dateTime: dateTime,
     );
   }
 
@@ -38,6 +39,7 @@ const $Message = _$MessageTearOff();
 mixin _$Message {
   String get sender;
   String get text;
+  DateTime get dateTime;
 
   Map<String, dynamic> toJson();
   $MessageCopyWith<Message> get copyWith;
@@ -47,7 +49,7 @@ mixin _$Message {
 abstract class $MessageCopyWith<$Res> {
   factory $MessageCopyWith(Message value, $Res Function(Message) then) =
       _$MessageCopyWithImpl<$Res>;
-  $Res call({String sender, String text});
+  $Res call({String sender, String text, DateTime dateTime});
 }
 
 /// @nodoc
@@ -62,10 +64,12 @@ class _$MessageCopyWithImpl<$Res> implements $MessageCopyWith<$Res> {
   $Res call({
     Object sender = freezed,
     Object text = freezed,
+    Object dateTime = freezed,
   }) {
     return _then(_value.copyWith(
       sender: sender == freezed ? _value.sender : sender as String,
       text: text == freezed ? _value.text : text as String,
+      dateTime: dateTime == freezed ? _value.dateTime : dateTime as DateTime,
     ));
   }
 }
@@ -75,7 +79,7 @@ abstract class _$MessageCopyWith<$Res> implements $MessageCopyWith<$Res> {
   factory _$MessageCopyWith(_Message value, $Res Function(_Message) then) =
       __$MessageCopyWithImpl<$Res>;
   @override
-  $Res call({String sender, String text});
+  $Res call({String sender, String text, DateTime dateTime});
 }
 
 /// @nodoc
@@ -91,10 +95,12 @@ class __$MessageCopyWithImpl<$Res> extends _$MessageCopyWithImpl<$Res>
   $Res call({
     Object sender = freezed,
     Object text = freezed,
+    Object dateTime = freezed,
   }) {
     return _then(_Message(
       sender: sender == freezed ? _value.sender : sender as String,
       text: text == freezed ? _value.text : text as String,
+      dateTime: dateTime == freezed ? _value.dateTime : dateTime as DateTime,
     ));
   }
 }
@@ -103,7 +109,7 @@ class __$MessageCopyWithImpl<$Res> extends _$MessageCopyWithImpl<$Res>
 
 /// @nodoc
 class _$_Message implements _Message {
-  _$_Message({this.sender, this.text});
+  _$_Message({this.sender, this.text, this.dateTime});
 
   factory _$_Message.fromJson(Map<String, dynamic> json) =>
       _$_$_MessageFromJson(json);
@@ -112,10 +118,12 @@ class _$_Message implements _Message {
   final String sender;
   @override
   final String text;
+  @override
+  final DateTime dateTime;
 
   @override
   String toString() {
-    return 'Message(sender: $sender, text: $text)';
+    return 'Message(sender: $sender, text: $text, dateTime: $dateTime)';
   }
 
   @override
@@ -125,14 +133,18 @@ class _$_Message implements _Message {
             (identical(other.sender, sender) ||
                 const DeepCollectionEquality().equals(other.sender, sender)) &&
             (identical(other.text, text) ||
-                const DeepCollectionEquality().equals(other.text, text)));
+                const DeepCollectionEquality().equals(other.text, text)) &&
+            (identical(other.dateTime, dateTime) ||
+                const DeepCollectionEquality()
+                    .equals(other.dateTime, dateTime)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(sender) ^
-      const DeepCollectionEquality().hash(text);
+      const DeepCollectionEquality().hash(text) ^
+      const DeepCollectionEquality().hash(dateTime);
 
   @override
   _$MessageCopyWith<_Message> get copyWith =>
@@ -145,7 +157,8 @@ class _$_Message implements _Message {
 }
 
 abstract class _Message implements Message {
-  factory _Message({String sender, String text}) = _$_Message;
+  factory _Message({String sender, String text, DateTime dateTime}) =
+      _$_Message;
 
   factory _Message.fromJson(Map<String, dynamic> json) = _$_Message.fromJson;
 
@@ -153,6 +166,8 @@ abstract class _Message implements Message {
   String get sender;
   @override
   String get text;
+  @override
+  DateTime get dateTime;
   @override
   _$MessageCopyWith<_Message> get copyWith;
 }
