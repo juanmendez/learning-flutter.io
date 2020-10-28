@@ -1,5 +1,3 @@
-import 'dart:developer' as d;
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/screens/widgets/pill_button.dart';
@@ -11,8 +9,7 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
-    with SingleTickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation _animation;
 
@@ -78,7 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             PillButton(
               'Log In',
               Colors.lightBlueAccent,
-                  () {
+              () {
                 Navigator.of(context).pushNamed(Routes.LOGIN_ROUTE);
               },
             ),

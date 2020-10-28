@@ -1,10 +1,12 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:learning_flutter/model/message.dart';
+
 import '../constants.dart';
+
+final firestore = FirebaseFirestore.instance;
+User loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -12,9 +14,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
-  User _loggedInUser;
+  final messageTextController = TextEditingController();
   String messageText;
 
   @override
@@ -27,8 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final user = _auth.currentUser;
 
     if (user != null) {
-      _loggedInUser = user;
-      _getMessages();
+      loggedInUser = user;
     } else {
       _logout();
     }
@@ -43,8 +43,6 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     });
   }
-
-  void _getMessages() {}
 
   @override
   Widget build(BuildContext context) {
@@ -63,39 +61,8 @@ class _ChatScreenState extends State<ChatScreen> {
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            StreamBuilder(
-              stream: _firestore.collection("messages").snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Text> widgets = [];
-                  final docs = snapshot.data.documents;
-
-                  for (var doc in docs) {
-                    final message = Message.fromJson(doc.data());
-                    widgets.add(
-                      Text(
-                        '${message.text} from ${message.sender}',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return Column(
-                    children: widgets,
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.lightBlueAccent,
-                    ),
-                  );
-                }
-              },
-            ),
+            Expanded(child: MessagesStream()),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -107,12 +74,16 @@ class _ChatScreenState extends State<ChatScreen> {
                         messageText = value;
                       },
                       decoration: kMessageTextFieldDecoration,
+                      controller: messageTextController,
                     ),
                   ),
                   FlatButton(
                     onPressed: () {
-                      _firestore.collection("messages").add(
-                          {"sender": _loggedInUser.email, "text": messageText});
+                      firestore.collection("messages").add(
+                        {"sender": loggedInUser.email, "text": messageText},
+                      );
+
+                      messageTextController.clear();
                     },
                     child: Text(
                       'Send',
@@ -124,6 +95,79 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MessagesStream extends StatelessWidget {
+  final _firestore = FirebaseFirestore.instance;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _firestore.collection("messages").snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Widget> widgets = [];
+
+          for (var doc in snapshot.data.documents) {
+            var message = Message.fromJson(doc.data());
+            widgets.add(MessageBubble(message: message, isCurrentUser: message.sender == loggedInUser.email));
+          }
+
+          return ListView(
+            children: widgets.reversed.toList(),
+            reverse: true,
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  const MessageBubble({@required this.message, @required this.isCurrentUser});
+
+  final Message message;
+  final bool isCurrentUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+        children: [
+          Text(
+            message.sender,
+            style: TextStyle(fontSize: 12, color: Colors.white54),
+          ),
+          SizedBox(height: 12),
+          Material(
+            color: isCurrentUser ? Colors.white70 : Colors.lightBlueAccent,
+            borderRadius: BorderRadius.only(
+              topLeft: isCurrentUser ? Radius.circular(0) : Radius.circular(30),
+              topRight: isCurrentUser ? Radius.circular(30) : Radius.circular(0),
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(30.0),
+            ),
+            elevation: 5.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Text(
+                message.text ?? '?',
+                style: TextStyle(fontSize: 15.0),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

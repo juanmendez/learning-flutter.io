@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class PillButton extends StatelessWidget {
   PillButton(this.text, this.color, this.onTap);
-  
+
   final String text;
   final Color color;
   final Function onTap;

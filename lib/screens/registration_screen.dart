@@ -17,10 +17,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void _register() {
     showSpinner = true;
 
-    _auth.createUserWithEmailAndPassword(
+    _auth
+        .createUserWithEmailAndPassword(
       email: _email,
       password: _password,
-    ).then((newUser) {
+    )
+        .then((newUser) {
       _isLoading(false);
       if (newUser != null) {
         Navigator.pushNamed(context, Routes.CHAT_ROUTE);
@@ -48,11 +50,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  height: 200.0,
-                  child: Image.asset('assets/images/logo.png'),
+              Flexible(
+                child: Hero(
+                  tag: 'logo',
+                  child: Container(
+                    height: 200.0,
+                    child: Image.asset('assets/images/logo.png'),
+                  ),
                 ),
               ),
               SizedBox(
@@ -62,8 +66,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 onChanged: (value) {
                   _email = value;
                 },
-                decoration:
-                    kInputDecoration.copyWith(hintText: 'Enter your email'),
+                decoration: kInputDecoration.copyWith(hintText: 'Enter your email'),
                 style: TextStyle(color: Colors.black),
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
@@ -75,8 +78,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 onChanged: (value) {
                   _password = value;
                 },
-                decoration:
-                    kInputDecoration.copyWith(hintText: 'Enter your password'),
+                decoration: kInputDecoration.copyWith(hintText: 'Enter your password'),
                 style: TextStyle(color: Colors.black),
                 textAlign: TextAlign.center,
                 obscureText: true,

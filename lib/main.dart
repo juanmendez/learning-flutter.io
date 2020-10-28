@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:learning_flutter/screens/welcome_screen.dart';
+import 'package:learning_flutter/screens/chat_screen.dart';
 import 'package:learning_flutter/screens/login_screen.dart';
 import 'package:learning_flutter/screens/registration_screen.dart';
-import 'package:learning_flutter/screens/chat_screen.dart';
+import 'package:learning_flutter/screens/welcome_screen.dart';
 
 import 'constants.dart';
 
@@ -15,7 +15,6 @@ void main() async {
 }
 
 class FlashChat extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,16 +28,14 @@ class FlashChat extends StatelessWidget {
         }),
       ),
       initialRoute: Routes.WELCOME_ROUTE,
-      onGenerateRoute: (RouteSettings settings){
-        switch(settings.name) {
-
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
           case Routes.REGISTRATION_ROUTE:
             return MaterialPageRoute(
                 settings: settings,
                 builder: (context) {
                   return RegistrationScreen();
-                }
-            );
+                });
             break;
 
           case Routes.LOGIN_ROUTE:
@@ -46,17 +43,15 @@ class FlashChat extends StatelessWidget {
                 settings: settings,
                 builder: (context) {
                   return LoginScreen();
-                }
-            );
+                });
             break;
 
           case Routes.CHAT_ROUTE:
             return MaterialPageRoute(
-              settings: settings,
-              builder: (context) {
-                return ChatScreen();
-              }
-            );
+                settings: settings,
+                builder: (context) {
+                  return ChatScreen();
+                });
             break;
 
           default:
@@ -64,8 +59,7 @@ class FlashChat extends StatelessWidget {
                 settings: settings,
                 builder: (context) {
                   return WelcomeScreen();
-                }
-            );
+                });
         }
       },
     );

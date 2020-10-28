@@ -19,10 +19,12 @@ class _LoginScreenState extends State<LoginScreen> {
     showSpinner = true;
 
     if (_email != null && _password != null) {
-      _auth.signInWithEmailAndPassword(
+      _auth
+          .signInWithEmailAndPassword(
         email: _email,
         password: _password,
-      ).then((value) {
+      )
+          .then((value) {
         _isLoading(false);
 
         if (value.user != null) {
@@ -52,11 +54,13 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Hero(
-                tag: 'logo',
-                child: Container(
-                  height: 200.0,
-                  child: Image.asset('assets/images/logo.png'),
+              Flexible(
+                child: Hero(
+                  tag: 'logo',
+                  child: Container(
+                    height: 200.0,
+                    child: Image.asset('assets/images/logo.png'),
+                  ),
                 ),
               ),
               SizedBox(
