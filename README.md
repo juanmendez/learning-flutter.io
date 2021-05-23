@@ -19,3 +19,24 @@ Here is a search based on The Plurinational State of Bolivia and Chicago, the Wi
 <img width="472" alt="image" src="https://user-images.githubusercontent.com/3371622/89745224-12872980-da78-11ea-98b3-159b89ae0ca6.png">
 <img width="472" alt="image" src="https://user-images.githubusercontent.com/3371622/89745211-f71c1e80-da77-11ea-9bcf-0fc88db421cd.png">
 <img width="472" alt="image" src="https://user-images.githubusercontent.com/3371622/89745217-026f4a00-da78-11ea-8ff4-990f57c087ad.png">
+
+## Going 2.0
+
+Dart 2.0 with null safety will feel right at home for developers who write code in Kotlin or Swift.
+There were some challenging aspects of switching to nullable types in this demo. I can't imagine 
+how much work there is for a large application, but I did everything by hand.
+
+## Get It (dependency injection)
+
+I tried using Provider to easy adding dependencies, but I found myself blocked when initializing a 
+widget, but now I remember a flag which allows for it.. Sorry, I am not a big fan of that dependency
+and coming from Dagger, I prefer using get_it instead.
+
+## Amplitude
+
+Using [Liskov Substitution Principal](https://stackify.com/solid-design-liskov-substitution-principle/), my Analytic class takes
+care of handling within Amplitude, as I am also interested to do another proof of concept using Segment
+then this is a lot easier to do as I no longer need to replace with Segment api methods all over the app.
+
+
+

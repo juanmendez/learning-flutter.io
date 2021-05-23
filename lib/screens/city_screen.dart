@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:learning_flutter/model/analytics_diccionary.dart';
 import 'package:learning_flutter/screens/loading_screen.dart';
+import 'package:learning_flutter/services/analytics.dart';
+import 'package:learning_flutter/services/injection.dart';
 import 'package:learning_flutter/utilities/constants.dart';
 
 class CityScreen extends StatefulWidget {
@@ -10,6 +13,20 @@ class CityScreen extends StatefulWidget {
 class _CityScreenState extends State<CityScreen> {
   String city = "";
 
+  Analytics get analytics => getIt.get<Analytics>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    analytics.logEvent(
+      AnalyticsEvent.VIEW_SCREEN,
+      eventProperties: <String, dynamic>{
+        AnalyticsKey.SCREEN: AnalyticsValue.CITY_SCREEN,
+      },
+    );
+  }
+
   void onChange(String value) {
     city = value.trim();
   }
@@ -19,7 +36,9 @@ class _CityScreenState extends State<CityScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return LoadingScreen(city: city,);
+          return LoadingScreen(
+            city: city,
+          );
         }),
       );
     }

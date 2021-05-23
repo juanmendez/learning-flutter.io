@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:learning_flutter/model/analytics_diccionary.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/screens/location_screen.dart';
+import 'package:learning_flutter/services/analytics.dart';
+import 'package:learning_flutter/services/injection.dart';
 import 'package:learning_flutter/services/network_result.dart';
 import 'package:learning_flutter/services/weather.dart';
 import 'package:learning_flutter/utilities/constants.dart';
@@ -19,19 +22,32 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> {
   var networkStatus = '';
 
+  Analytics get analytics => getIt.get<Analytics>();
+
   @override
   void initState() {
     super.initState();
+
+    analytics.logEvent(
+      AnalyticsEvent.VIEW_SCREEN,
+      eventProperties: <String, dynamic>{
+        AnalyticsKey.SCREEN: AnalyticsValue.LOADING_SCREEN,
+      },
+    );
+
     getLocation();
   }
-
   void getLocation() async {
-    NetworkResult<WeatherResult> result;
+    late NetworkResult<WeatherResult> result;
 
-    if (widget.city.isNotEmpty) {
-      result = await WeatherModel.getWeatherByCity(widget.city);
-    } else {
-      result = await WeatherModel.getWeatherByLocation();
+    try {
+      if (widget.city.isNotEmpty) {
+        result = await WeatherModel.getWeatherByCity(widget.city);
+      } else {
+        result = await WeatherModel.getWeatherByLocation();
+      }
+    } catch(e, s) {
+      print('weather error: $e $s');
     }
 
     if (result.data != null) {

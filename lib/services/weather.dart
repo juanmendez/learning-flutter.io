@@ -20,7 +20,7 @@ class WeatherModel {
   // https://www.pexels.com/api/documentation/#photos-search
   static Future<NetworkResult<PhotoResult>> getPhoto(
       String city) async {
-    final String request = Strings.getPhotoByCity(city);
+    final request = Uri.parse(Strings.getPhotoByCity(city));
     final response = await http.get(request, headers: Strings.getPhotoHeader());
 
     NetworkResult<PhotoResult> result;
@@ -37,7 +37,7 @@ class WeatherModel {
 
   static Future<NetworkResult<WeatherResult>> getWeatherByCity(
       String city) async {
-    final String request = Strings.getWeatherCityUrl(city);
+    final request = Uri.parse(Strings.getWeatherCityUrl(city));
     final response = await http.get(request);
 
     NetworkResult<WeatherResult> result;
@@ -53,12 +53,12 @@ class WeatherModel {
   }
 
   static Future<NetworkResult<WeatherResult>> getWeatherResult(Position position) async {
-    final String request = Strings.getWeatherLocationUrl(
+    final String url = Strings.getWeatherLocationUrl(
       position.latitude,
       position.longitude,
     );
 
-    final response = await http.get(request);
+    final response = await http.get(Uri.parse(url));
     NetworkResult<WeatherResult> result;
 
     if (response.statusCode == 200) {

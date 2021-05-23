@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class NoSlidingRoute<T> extends MaterialPageRoute<T> {
   NoSlidingRoute({
-    WidgetBuilder builder,
-    RouteSettings settings,
+    required WidgetBuilder builder,
+    RouteSettings? settings,
   }) : super(builder: builder, settings: settings);
 
   @override

@@ -1,6 +1,9 @@
 class NetworkResult<T> {
-  NetworkResult({this.data, this.exception});
+  NetworkResult({
+    this.data,
+    this.exception,
+  });
 
-  final T data;
-  final Exception exception;
+  final T? data;
+  final Exception? exception;
 }
