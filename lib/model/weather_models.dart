@@ -172,7 +172,7 @@ class Sys {
   String toRawJson() => json.encode(toJson());
 
   factory Sys.fromJson(Map<String, dynamic> json) => Sys(
-    type: json["type"],
+    type: json["type"] ?? 0,
     id: json["id"],
     country: json["country"],
     sunrise: json["sunrise"],

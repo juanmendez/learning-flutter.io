@@ -35,8 +35,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
       },
     );
 
+    if (widget.city.isNotEmpty) {
+      analytics.logEvent(
+        AnalyticsEvent.CITY_SEARCHED,
+        eventProperties: <String, dynamic>{
+          AnalyticsKey.CITY: widget.city,
+        },
+      );
+    }
+
     getLocation();
   }
+
   void getLocation() async {
     late NetworkResult<WeatherResult> result;
 
@@ -45,8 +55,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
         result = await WeatherModel.getWeatherByCity(widget.city);
       } else {
         result = await WeatherModel.getWeatherByLocation();
+
+        if(result.data?.name != null) {
+          analytics.logEvent(
+            AnalyticsEvent.CITY_DETECTED,
+            eventProperties: <String, dynamic>{
+              AnalyticsKey.CITY: result.data!.name,
+            },
+          );
+        }
       }
-    } catch(e, s) {
+    } catch (e, s) {
       print('weather error: $e $s');
     }
 

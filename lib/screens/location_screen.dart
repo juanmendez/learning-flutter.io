@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/model/analytics_diccionary.dart';
 import 'package:learning_flutter/model/photo_models.dart';
@@ -44,7 +43,7 @@ class _LocationScreenState extends State<LocationScreen> {
 
     final weatherResult = widget.weatherResult;
 
-    if(weatherResult != null) {
+    if (weatherResult != null) {
       updateWeatherResult(weatherResult);
     }
   }
@@ -67,15 +66,26 @@ class _LocationScreenState extends State<LocationScreen> {
 
     setState(() {
       message = sprintf(Strings.TIME_IN_LOCAtION, [activity, cityName]);
-      getPhotoByCity(cityName);
     });
+
+    getPhotoByCity(cityName);
   }
 
   Future<void> getPhotoByCity(String city) async {
     NetworkResult<PhotoResult> photoResult = await WeatherModel.getPhoto(city);
     imageUrl = "";
-    if (photoResult.data?.photos.isNotEmpty == true) {
-      imageUrl = photoResult.data?.photos.first.src.large ?? "";
+    
+    if (photoResult.data != null) {
+      setState(() {
+        imageUrl = photoResult.data!.photos.first.src.large;
+      });
+
+      analytics.logEvent(
+        AnalyticsEvent.CITY_IMAGE_FOUND,
+        eventProperties: <String, dynamic>{
+          AnalyticsKey.URL: imageUrl,
+        },
+      );
     }
   }
 
@@ -97,13 +107,14 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 
-  BoxDecoration? getBoxDecoration() {
+  BoxDecoration getBoxDecoration() {
     late ImageProvider provider;
 
     if (imageUrl != null) {
-      provider = NetworkImage(imageUrl ?? '');
+      provider = NetworkImage(imageUrl!);
     } else {
       provider = AssetImage('assets/images/location_background.jpg');
+      analytics.logEvent(AnalyticsEvent.NO_CITY_IMAGE_FOUND);
     }
 
     return BoxDecoration(
