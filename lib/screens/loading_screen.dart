@@ -26,12 +26,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocation() async {
-    NetworkResult<WeatherResult> result;
+    late NetworkResult<WeatherResult> result;
 
-    if (widget.city.isNotEmpty) {
-      result = await WeatherModel.getWeatherByCity(widget.city);
-    } else {
-      result = await WeatherModel.getWeatherByLocation();
+    try {
+      if (widget.city.isNotEmpty) {
+        result = await WeatherModel.getWeatherByCity(widget.city);
+      } else {
+        result = await WeatherModel.getWeatherByLocation();
+      }
+    } catch (e, s) {
+      print('weather error: $e $s');
     }
 
     if (result.data != null) {

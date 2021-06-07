@@ -2,18 +2,18 @@ import 'dart:convert';
 
 class PhotoResult {
   PhotoResult({
-    this.totalResults,
-    this.page,
-    this.perPage,
-    this.photos,
-    this.nextPage,
+    required this.totalResults,
+    required this.page,
+    required this.perPage,
+    required this.photos,
+    required this.nextPage,
   });
 
   final int totalResults;
   final int page;
   final int perPage;
   final List<Photo> photos;
-  final String nextPage;
+  final String? nextPage;
 
   factory PhotoResult.fromRawJson(String str) => PhotoResult.fromJson(json.decode(str));
 
@@ -38,15 +38,15 @@ class PhotoResult {
 
 class Photo {
   Photo({
-    this.id,
-    this.width,
-    this.height,
-    this.url,
-    this.photographer,
-    this.photographerUrl,
-    this.photographerId,
-    this.src,
-    this.liked,
+    required this.id,
+    required this.width,
+    required this.height,
+    required this.url,
+    required this.photographer,
+    required this.photographerUrl,
+    required this.photographerId,
+    required this.src,
+    required this.liked,
   });
 
   final int id;
@@ -90,14 +90,14 @@ class Photo {
 
 class Src {
   Src({
-    this.original,
-    this.large2X,
-    this.large,
-    this.medium,
-    this.small,
-    this.portrait,
-    this.landscape,
-    this.tiny,
+    required this.original,
+    required this.large2X,
+    required this.large,
+    required this.medium,
+    required this.small,
+    required this.portrait,
+    required this.landscape,
+    required this.tiny,
   });
 
   final String original;

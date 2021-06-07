@@ -19,7 +19,9 @@ class _CityScreenState extends State<CityScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) {
-          return LoadingScreen(city: city,);
+          return LoadingScreen(
+            city: city,
+          );
         }),
       );
     }
@@ -61,7 +63,7 @@ class _CityScreenState extends State<CityScreen> {
                   onChanged: onChange,
                 ),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: submit,
                 child: Text(
                   'Get Weather',

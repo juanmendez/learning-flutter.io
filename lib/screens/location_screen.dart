@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:learning_flutter/model/photo_models.dart';
@@ -14,7 +12,7 @@ import 'package:learning_flutter/utilities/no_sliding_route.dart';
 import 'package:sprintf/sprintf.dart';
 
 class LocationScreen extends StatefulWidget {
-  final WeatherResult weatherResult;
+  final WeatherResult? weatherResult;
 
   LocationScreen(this.weatherResult);
 
@@ -23,17 +21,20 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  int temperature;
-  String condition;
-  String message;
-  String imageUrl;
+  int temperature = 0;
+  String? condition;
+  String? message;
+  String? imageUrl;
 
   @override
   void initState() {
     super.initState();
 
     final weatherResult = widget.weatherResult;
-    updateWeatherResult(weatherResult);
+
+    if (weatherResult != null) {
+      updateWeatherResult(weatherResult);
+    }
   }
 
   void updateWeatherResult(WeatherResult weatherResult) {
@@ -49,23 +50,27 @@ class _LocationScreenState extends State<LocationScreen> {
     }
 
     final cityName = weatherResult.name;
+
     final activity = WeatherModel.getMessage(temperature);
-    message = sprintf(Strings.TIME_IN_LOCAtION, [activity, cityName]);
+
+    setState(() {
+      message = sprintf(Strings.TIME_IN_LOCAtION, [activity, cityName]);
+    });
 
     getPhotoByCity(cityName);
   }
 
-  void getPhotoByCity(String city) async {
+  Future<void> getPhotoByCity(String city) async {
     NetworkResult<PhotoResult> photoResult = await WeatherModel.getPhoto(city);
+    imageUrl = "";
 
-    setState(() {
-      imageUrl = "";
-      if(photoResult.data != null) {
-        if(photoResult.data.photos.isNotEmpty) {
-          imageUrl = photoResult.data.photos.first.src.large ?? "";
-        }
-      }
-    });
+    final data = photoResult.data;
+
+    if (data != null) {
+      setState(() {
+        imageUrl = data.photos.first.src.large;
+      });
+    }
   }
 
   void updateWeatherLocation() {
@@ -87,30 +92,24 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   BoxDecoration getBoxDecoration() {
-    ImageProvider provider;
+    late ImageProvider provider;
 
-    if(imageUrl != null) {
-      if(imageUrl.isNotEmpty) {
-        provider = NetworkImage(imageUrl);
-      } else if(imageUrl.isEmpty){
-        provider = AssetImage('assets/images/location_background.jpg');
-      }
-    }
-
-    if(provider != null) {
-      return BoxDecoration(
-        image: DecorationImage(
-          image: provider,
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.white.withOpacity(0.8),
-            BlendMode.dstATop,
-          ),
-        ),
-      );
+    if (imageUrl != null) {
+      provider = NetworkImage(imageUrl!);
     } else {
-      return null;
+      provider = AssetImage('assets/images/location_background.jpg');
     }
+
+    return BoxDecoration(
+      image: DecorationImage(
+        image: provider,
+        fit: BoxFit.cover,
+        colorFilter: ColorFilter.mode(
+          Colors.white.withOpacity(0.8),
+          BlendMode.dstATop,
+        ),
+      ),
+    );
   }
 
   @override
@@ -152,7 +151,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: kTempTextStyle,
                     ),
                     Text(
-                      condition,
+                      condition ?? '',
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -161,7 +160,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  message,
+                  message ?? '',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),

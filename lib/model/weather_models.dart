@@ -2,19 +2,19 @@ import 'dart:convert';
 
 class WeatherResult {
   WeatherResult({
-    this.coord,
-    this.weather,
-    this.base,
-    this.main,
-    this.visibility,
-    this.wind,
-    this.clouds,
-    this.dt,
-    this.sys,
-    this.timezone,
-    this.id,
-    this.name,
-    this.cod,
+    required this.coord,
+    required this.weather,
+    required this.base,
+    required this.main,
+    required this.visibility,
+    required this.wind,
+    required this.clouds,
+    required this.dt,
+    required this.sys,
+    required this.timezone,
+    required this.id,
+    required this.name,
+    required this.cod,
   });
 
   final Coord coord;
@@ -70,7 +70,7 @@ class WeatherResult {
 
 class Clouds {
   Clouds({
-    this.all,
+    required this.all,
   });
 
   final int all;
@@ -90,8 +90,8 @@ class Clouds {
 
 class Coord {
   Coord({
-    this.lon,
-    this.lat,
+    required this.lon,
+    required this.lat,
   });
 
   final double lon;
@@ -114,12 +114,12 @@ class Coord {
 
 class Main {
   Main({
-    this.temp,
-    this.feelsLike,
-    this.tempMin,
-    this.tempMax,
-    this.pressure,
-    this.humidity,
+    required this.temp,
+    required this.feelsLike,
+    required this.tempMin,
+    required this.tempMax,
+    required this.pressure,
+    required this.humidity,
   });
 
   final double temp;
@@ -154,11 +154,11 @@ class Main {
 
 class Sys {
   Sys({
-    this.type,
-    this.id,
-    this.country,
-    this.sunrise,
-    this.sunset,
+    required this.type,
+    required this.id,
+    required this.country,
+    required this.sunrise,
+    required this.sunset,
   });
 
   final int type;
@@ -172,7 +172,7 @@ class Sys {
   String toRawJson() => json.encode(toJson());
 
   factory Sys.fromJson(Map<String, dynamic> json) => Sys(
-    type: json["type"],
+    type: json["type"] ?? 0,
     id: json["id"],
     country: json["country"],
     sunrise: json["sunrise"],
@@ -190,10 +190,10 @@ class Sys {
 
 class Weather {
   Weather({
-    this.id,
-    this.main,
-    this.description,
-    this.icon,
+    required this.id,
+    required this.main,
+    required this.description,
+    required this.icon,
   });
 
   final int id;
@@ -222,8 +222,8 @@ class Weather {
 
 class Wind {
   Wind({
-    this.speed,
-    this.deg,
+    required this.speed,
+    required this.deg,
   });
 
   final double speed;
