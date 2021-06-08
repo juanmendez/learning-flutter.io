@@ -4,19 +4,19 @@ abstract class WeatherState {
   const WeatherState();
 }
 
-class WeatherInitial extends WeatherState {
+class WeatherInitial extends WeatherState with EquatableMixin {
   @override
   List<Object> get props => [];
 }
 
-class WeatherLoading extends WeatherState {
+class WeatherLoading extends WeatherState with EquatableMixin {
   const WeatherLoading();
 
   @override
   List<Object> get props => [];
 }
 
-class WeatherSuccess extends WeatherState {
+class WeatherSuccess extends WeatherState with EquatableMixin {
   final WeatherResult result;
 
   const WeatherSuccess(this.result);
@@ -25,7 +25,7 @@ class WeatherSuccess extends WeatherState {
   List<Object> get props => [result];
 }
 
-class WeatherError extends WeatherState {
+class WeatherError extends WeatherState with EquatableMixin {
   final String message;
 
   const WeatherError(this.message);

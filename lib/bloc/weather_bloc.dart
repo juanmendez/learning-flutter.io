@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/services/weather.dart';
 
