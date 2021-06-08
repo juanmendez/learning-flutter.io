@@ -1,14 +1,13 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_flutter/bloc/weather_bloc.dart';
 import 'package:learning_flutter/model/photo_models.dart';
 import 'package:learning_flutter/model/weather_models.dart';
-import 'package:learning_flutter/screens/city_screen.dart';
-import 'package:learning_flutter/screens/loading_screen.dart';
 import 'package:learning_flutter/services/network_result.dart';
 import 'package:learning_flutter/services/weather.dart';
 import 'package:learning_flutter/utilities/Strings.dart';
 import 'package:learning_flutter/utilities/constants.dart';
-import 'package:learning_flutter/utilities/no_sliding_route.dart';
+import 'package:learning_flutter/utilities/routes.dart';
 import 'package:sprintf/sprintf.dart';
 
 class LocationScreen extends StatefulWidget {
@@ -74,21 +73,11 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateWeatherLocation() {
-    Navigator.pushReplacement(
-      context,
-      NoSlidingRoute(builder: (context) {
-        return LoadingScreen();
-      }),
-    );
+    BlocProvider.of<WeatherBloc>(context).add(WeatherByGeolocationEvent());
   }
 
   void searchByCity() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return CityScreen();
-      }),
-    );
+    Navigator.of(context).pushNamed(Routes.CITY);
   }
 
   BoxDecoration getBoxDecoration() {

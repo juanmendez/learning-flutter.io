@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_flutter/bloc/weather_bloc.dart';
+import 'package:learning_flutter/model/weather_models.dart';
+import 'package:learning_flutter/screens/city_screen.dart';
 import 'package:learning_flutter/screens/loading_screen.dart';
+import 'package:learning_flutter/screens/location_screen.dart';
 import 'package:learning_flutter/services/injection.dart';
+import 'package:learning_flutter/utilities/no_sliding_route.dart';
+import 'package:learning_flutter/utilities/routes.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,17 +17,87 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late NavigatorState childNav;
+  String errorMessage = '';
+  late WeatherBloc weatherBloc;
+  late WeatherResult weatherResult;
+
   @override
   void initState() {
     super.initState();
     configureDependencies();
+
+    // lets start looking for weather by geolocation
+    weatherBloc = WeatherBloc();
+    weatherBloc.add(WeatherByGeolocationEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: LoadingScreen(),
+    return BlocProvider<WeatherBloc>(
+      create: (_) => weatherBloc,
+      child: BlocListener<WeatherBloc, WeatherState>(
+        listener: (context, state) {
+          if (state is WeatherLoading) {
+            errorMessage = '';
+            childNav.popUntil((route) => route.isFirst);
+            childNav.pushReplacementNamed(Routes.LOADING);
+          } else if (state is WeatherSuccess) {
+            errorMessage = '';
+            weatherResult = state.result;
+            childNav.pushReplacementNamed(Routes.LOCATION);
+          } else if (state is WeatherError) {
+            errorMessage = state.message;
+            childNav.popUntil((route) => route.isFirst);
+            childNav.pushReplacementNamed(Routes.LOADING);
+          }
+        },
+        child: MaterialApp(
+            theme: ThemeData.dark(),
+            home: Navigator(
+              initialRoute: Routes.LOADING,
+              onGenerateRoute: (RouteSettings settings) {
+                late MaterialPageRoute route;
+
+                switch (settings.name) {
+                  case Routes.LOADING:
+                    route = NoSlidingRoute(
+                        settings: settings,
+                        builder: (childContext) {
+                          childNav = Navigator.of(childContext);
+                          return LoadingScreen(
+                            getLocation: () {
+                              // this is how we can access provider inside child as well
+                              BlocProvider.of<WeatherBloc>(childContext).add(WeatherByGeolocationEvent());
+                            },
+                            errorMessage: errorMessage,
+                          );
+                        });
+                    break;
+
+                  case Routes.CITY:
+                    route = MaterialPageRoute(
+                        settings: settings,
+                        builder: (childContext) {
+                          childNav = Navigator.of(childContext);
+                          return CityScreen();
+                        });
+                    break;
+
+                  case Routes.LOCATION:
+                    route = MaterialPageRoute(
+                        settings: settings,
+                        builder: (childContext) {
+                          childNav = Navigator.of(childContext);
+                          return LocationScreen(weatherResult);
+                        });
+                    break;
+                }
+
+                return route;
+              },
+            )),
+      ),
     );
   }
 }

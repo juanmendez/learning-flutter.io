@@ -10,7 +10,7 @@ import 'location.dart';
 import 'network_result.dart';
 
 class WeatherModel {
-  static Future<NetworkResult<WeatherResult>> getWeatherByLocation() async {
+  static Future<WeatherResult> getWeatherByLocation() async {
     final Position position = await Location.getLocation();
     final result = await WeatherModel.getWeatherResult(position);
 
@@ -18,8 +18,7 @@ class WeatherModel {
   }
 
   // https://www.pexels.com/api/documentation/#photos-search
-  static Future<NetworkResult<PhotoResult>> getPhoto(
-      String city) async {
+  static Future<NetworkResult<PhotoResult>> getPhoto(String city) async {
     final request = Uri.parse(Strings.getPhotoByCity(city));
     final response = await http.get(request, headers: Strings.getPhotoHeader());
 
@@ -35,37 +34,36 @@ class WeatherModel {
     return result;
   }
 
-  static Future<NetworkResult<WeatherResult>> getWeatherByCity(
-      String city) async {
+  static Future<WeatherResult> getWeatherByCity(String city) async {
     final request = Uri.parse(Strings.getWeatherCityUrl(city));
     final response = await http.get(request);
 
-    NetworkResult<WeatherResult> result;
+    WeatherResult result;
 
     if (response.statusCode == 200) {
       final weatherResult = WeatherResult.fromRawJson(response.body);
-      result = NetworkResult(data: weatherResult);
+      result = weatherResult;
     } else {
-      result = NetworkResult(exception: HttpException("network error"));
+      throw HttpException("network error");
     }
 
     return result;
   }
 
-  static Future<NetworkResult<WeatherResult>> getWeatherResult(Position position) async {
+  static Future<WeatherResult> getWeatherResult(Position position) async {
     final String url = Strings.getWeatherLocationUrl(
       position.latitude,
       position.longitude,
     );
 
     final response = await http.get(Uri.parse(url));
-    NetworkResult<WeatherResult> result;
+    WeatherResult result;
 
     if (response.statusCode == 200) {
       final weatherResult = WeatherResult.fromRawJson(response.body);
-      result = NetworkResult(data: weatherResult);
+      result = weatherResult;
     } else {
-      result = NetworkResult(exception: HttpException("network error"));
+      throw HttpException("network error");
     }
 
     return result;

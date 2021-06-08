@@ -8,11 +8,11 @@ class NoSlidingRoute<T> extends MaterialPageRoute<T> {
 
   @override
   Widget buildTransitions(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child,
-      ) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     var tween = Tween(begin: Offset.zero, end: Offset.zero);
 
     return SlideTransition(

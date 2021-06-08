@@ -32,5 +32,11 @@ I tried using Provider to easy adding dependencies, but I found myself blocked w
 widget, but now I remember a flag which allows for it.. Sorry, I am not a big fan of that dependency
 and coming from Dagger, I prefer using get_it instead.
 
+## Bloc
 
+I begin making use of code automation. This helps me ease having to write this myself.
 
+<img width="731" alt="image" src="https://user-images.githubusercontent.com/3371622/121093938-699e7d80-c7b3-11eb-84d9-2665126f0cc9.png">
+
+Lets install Bloc in our project
+`flutter pub add flutter_bloc`
