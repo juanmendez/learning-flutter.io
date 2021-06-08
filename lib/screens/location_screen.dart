@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_flutter/bloc/weather_bloc.dart';
+import 'package:learning_flutter/bloc/weather_cubit.dart';
 import 'package:learning_flutter/model/photo_models.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/services/network_result.dart';
@@ -73,7 +73,7 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateWeatherLocation() {
-    BlocProvider.of<WeatherBloc>(context).add(WeatherByGeolocationEvent());
+    BlocProvider.of<WeatherCubit>(context).weatherByLocation();
   }
 
   void searchByCity() {

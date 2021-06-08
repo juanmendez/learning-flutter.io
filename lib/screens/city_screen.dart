@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_flutter/bloc/weather_bloc.dart';
+import 'package:learning_flutter/bloc/weather_cubit.dart';
 import 'package:learning_flutter/utilities/constants.dart';
 
 class CityScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _CityScreenState extends State<CityScreen> {
 
   void submit() {
     if (city.isNotEmpty) {
-      BlocProvider.of<WeatherBloc>(context).add(WeatherByCityEvent(city));
+      BlocProvider.of<WeatherCubit>(context).weatherByCity(city);
     }
   }
 

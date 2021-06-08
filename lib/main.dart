@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_flutter/bloc/weather_bloc.dart';
+import 'package:learning_flutter/bloc/weather_cubit.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/screens/city_screen.dart';
 import 'package:learning_flutter/screens/loading_screen.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late NavigatorState childNav;
   String errorMessage = '';
-  late WeatherBloc weatherBloc;
+  late WeatherCubit weatherBloc;
   late WeatherResult weatherResult;
 
   @override
@@ -28,15 +28,15 @@ class _MyAppState extends State<MyApp> {
     configureDependencies();
 
     // lets start looking for weather by geolocation
-    weatherBloc = WeatherBloc();
-    weatherBloc.add(WeatherByGeolocationEvent());
+    weatherBloc = WeatherCubit();
+    weatherBloc.weatherByLocation();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<WeatherBloc>(
+    return BlocProvider<WeatherCubit>(
       create: (_) => weatherBloc,
-      child: BlocListener<WeatherBloc, WeatherState>(
+      child: BlocListener<WeatherCubit, WeatherState>(
         listener: (context, state) {
           if (state is WeatherLoading) {
             errorMessage = '';
@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
                           return LoadingScreen(
                             getLocation: () {
                               // this is how we can access provider inside child as well
-                              BlocProvider.of<WeatherBloc>(childContext).add(WeatherByGeolocationEvent());
+                              BlocProvider.of<WeatherCubit>(childContext).weatherByLocation();
                             },
                             errorMessage: errorMessage,
                           );
