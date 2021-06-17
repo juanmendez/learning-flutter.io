@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learning_flutter/bloc/photo_bloc.dart';
 import 'package:learning_flutter/bloc/weather_bloc.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/screens/city_screen.dart';
@@ -19,8 +20,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late NavigatorState childNav;
   String errorMessage = '';
-  late WeatherBloc weatherBloc;
-  late WeatherResult weatherResult;
+  late WeatherBloc _weatherBloc;
+  WeatherResult? _weatherResult;
+  String? _locationBackground;
 
   @override
   void initState() {
@@ -28,30 +30,56 @@ class _MyAppState extends State<MyApp> {
     configureDependencies();
 
     // lets start looking for weather by geolocation
-    weatherBloc = WeatherBloc();
-    weatherBloc.add(WeatherByGeolocationEvent());
+    _weatherBloc = WeatherBloc();
+    _weatherBloc.add(WeatherByGeolocationEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<WeatherBloc>(
-      create: (_) => weatherBloc,
-      child: BlocListener<WeatherBloc, WeatherState>(
-        listener: (context, state) {
-          if (state is WeatherLoading) {
-            errorMessage = '';
-            childNav.popUntil((route) => route.isFirst);
-            childNav.pushReplacementNamed(Routes.LOADING);
-          } else if (state is WeatherSuccess) {
-            errorMessage = '';
-            weatherResult = state.result;
-            childNav.pushReplacementNamed(Routes.LOCATION);
-          } else if (state is WeatherError) {
-            errorMessage = state.message;
-            childNav.popUntil((route) => route.isFirst);
-            childNav.pushReplacementNamed(Routes.LOADING);
-          }
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<WeatherBloc>(
+          create: (BuildContext context) => _weatherBloc,
+        ),
+        BlocProvider<PhotoBloc>(
+          create: (BuildContext context) => PhotoBloc(),
+        )
+      ],
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<WeatherBloc, WeatherState>(
+            listener: (context, state) {
+              if (state is WeatherLoading) {
+                errorMessage = '';
+
+                // in between these calls, it is nice to reset the location background
+                // when intercepting the next call.
+                _locationBackground = null;
+                childNav.popUntil((route) => route.isFirst);
+                childNav.pushReplacementNamed(Routes.LOADING);
+              } else if (state is WeatherSuccess) {
+                errorMessage = '';
+                _weatherResult = state.result;
+                childNav.pushReplacementNamed(Routes.LOCATION);
+              } else if (state is WeatherError) {
+                errorMessage = state.message;
+                childNav.popUntil((route) => route.isFirst);
+                childNav.pushReplacementNamed(Routes.LOADING);
+              }
+            },
+          ),
+          BlocListener<PhotoBloc, PhotoState>(
+            listener: (context, state) {
+              setState(() {
+                if(state is PhotoSuccess) {
+                  _locationBackground = state.result;
+                } else if(state is PhotoError) {
+                  _locationBackground = '';
+                }
+              });
+            },
+          ),
+        ],
         child: MaterialApp(
             theme: ThemeData.dark(),
             home: Navigator(
@@ -89,7 +117,7 @@ class _MyAppState extends State<MyApp> {
                         settings: settings,
                         builder: (childContext) {
                           childNav = Navigator.of(childContext);
-                          return LocationScreen(weatherResult);
+                          return LocationScreen(_weatherResult, _locationBackground);
                         });
                     break;
                 }
