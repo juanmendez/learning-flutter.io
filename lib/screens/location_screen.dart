@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learning_flutter/bloc/photo_bloc.dart';
 import 'package:learning_flutter/bloc/weather_bloc.dart';
 import 'package:learning_flutter/model/location_result.dart';
 import 'package:learning_flutter/model/weather_models.dart';
@@ -12,6 +11,7 @@ import 'package:sprintf/sprintf.dart';
 
 class LocationScreen extends StatelessWidget {
   LocationScreen(this.locationResult);
+
   final LocationResult locationResult;
 
   int _temperature = 0;
@@ -19,18 +19,9 @@ class LocationScreen extends StatelessWidget {
   String? _message;
 
   void updateProperties(BuildContext context) {
-
     final weatherResult = locationResult.weatherResult;
-
     if (weatherResult != null) {
       updateWeatherResult(weatherResult);
-
-      if(locationResult.locationBackground == null) {
-        // we now request photo by location
-        BlocProvider.of<PhotoBloc>(context).add(
-          PhotoEvent(weatherResult.name),
-        );
-      }
     }
   }
 
@@ -144,4 +135,3 @@ class LocationScreen extends StatelessWidget {
     );
   }
 }
-
