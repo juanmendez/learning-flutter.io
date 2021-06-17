@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_flutter/bloc/photo_bloc.dart';
 import 'package:learning_flutter/bloc/weather_bloc.dart';
+import 'package:learning_flutter/model/location_result.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/screens/city_screen.dart';
 import 'package:learning_flutter/screens/loading_screen.dart';
@@ -21,8 +22,7 @@ class _MyAppState extends State<MyApp> {
   late NavigatorState childNav;
   String errorMessage = '';
   late WeatherBloc _weatherBloc;
-  WeatherResult? _weatherResult;
-  String? _locationBackground;
+  LocationResult _locationResult = LocationResult();
 
   @override
   void initState() {
@@ -54,12 +54,13 @@ class _MyAppState extends State<MyApp> {
 
                 // in between these calls, it is nice to reset the location background
                 // when intercepting the next call.
-                _locationBackground = null;
+                _locationResult = LocationResult();
                 childNav.popUntil((route) => route.isFirst);
                 childNav.pushReplacementNamed(Routes.LOADING);
               } else if (state is WeatherSuccess) {
                 errorMessage = '';
-                _weatherResult = state.result;
+                _locationResult = _locationResult.copy();
+                _locationResult.weatherResult = state.result;
                 childNav.pushReplacementNamed(Routes.LOCATION);
               } else if (state is WeatherError) {
                 errorMessage = state.message;
@@ -72,9 +73,11 @@ class _MyAppState extends State<MyApp> {
             listener: (context, state) {
               setState(() {
                 if(state is PhotoSuccess) {
-                  _locationBackground = state.result;
+                  _locationResult = _locationResult.copy();
+                  _locationResult.locationBackground = state.result;
                 } else if(state is PhotoError) {
-                  _locationBackground = '';
+                  _locationResult = _locationResult.copy();
+                  _locationResult.locationBackground = '';
                 }
               });
             },
@@ -117,7 +120,7 @@ class _MyAppState extends State<MyApp> {
                         settings: settings,
                         builder: (childContext) {
                           childNav = Navigator.of(childContext);
-                          return LocationScreen(_weatherResult, _locationBackground);
+                          return LocationScreen(_locationResult);
                         });
                     break;
                 }

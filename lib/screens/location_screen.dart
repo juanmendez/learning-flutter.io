@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning_flutter/bloc/photo_bloc.dart';
 import 'package:learning_flutter/bloc/weather_bloc.dart';
+import 'package:learning_flutter/model/location_result.dart';
 import 'package:learning_flutter/model/weather_models.dart';
 import 'package:learning_flutter/services/weather.dart';
 import 'package:learning_flutter/utilities/Strings.dart';
@@ -9,69 +10,60 @@ import 'package:learning_flutter/utilities/constants.dart';
 import 'package:learning_flutter/utilities/routes.dart';
 import 'package:sprintf/sprintf.dart';
 
-class LocationScreen extends StatefulWidget {
-  final WeatherResult? weatherResult;
-  final String? locationBackground;
+class LocationScreen extends StatelessWidget {
+  LocationScreen(this.locationResult);
+  final LocationResult locationResult;
 
-  LocationScreen(this.weatherResult, this.locationBackground);
+  int _temperature = 0;
+  String? _condition;
+  String? _message;
 
-  @override
-  _LocationScreenState createState() => _LocationScreenState();
-}
+  void updateProperties(BuildContext context) {
 
-class _LocationScreenState extends State<LocationScreen> {
-  int temperature = 0;
-  String? condition;
-  String? message;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final weatherResult = widget.weatherResult;
+    final weatherResult = locationResult.weatherResult;
 
     if (weatherResult != null) {
       updateWeatherResult(weatherResult);
+
+      if(locationResult.locationBackground == null) {
+        // we now request photo by location
+        BlocProvider.of<PhotoBloc>(context).add(
+          PhotoEvent(weatherResult.name),
+        );
+      }
     }
   }
 
   void updateWeatherResult(WeatherResult weatherResult) {
-    temperature = weatherResult.main.temp.round();
+    _temperature = weatherResult.main.temp.round();
 
     var weather = weatherResult.weather;
 
     if (weather.isNotEmpty) {
       int id = weather.first.id;
-      condition = WeatherModel.getWeatherIcon(id);
+      _condition = WeatherModel.getWeatherIcon(id);
     } else {
-      condition = WeatherModel.getWeatherIcon(0);
+      _condition = WeatherModel.getWeatherIcon(0);
     }
 
     final locationName = weatherResult.name;
 
-    final activity = WeatherModel.getMessage(temperature);
+    final activity = WeatherModel.getMessage(_temperature);
 
-    setState(() {
-      message = sprintf(Strings.TIME_IN_LOCAtION, [activity, locationName]);
-    });
-
-    // we now request photo by location
-    BlocProvider.of<PhotoBloc>(context).add(
-      PhotoEvent(locationName),
-    );
+    _message = sprintf(Strings.TIME_IN_LOCAtION, [activity, locationName]);
   }
 
-  void updateWeatherLocation() {
+  void updateWeatherLocation(BuildContext context) {
     BlocProvider.of<WeatherBloc>(context).add(WeatherByGeolocationEvent());
   }
 
-  void searchByCity() {
+  void searchByCity(BuildContext context) {
     Navigator.of(context).pushNamed(Routes.CITY);
   }
 
   BoxDecoration? getBoxDecoration() {
     ImageProvider? provider;
-    final imageUrl = widget.locationBackground;
+    final imageUrl = locationResult.locationBackground;
 
     if (imageUrl != null) {
       if (imageUrl.isNotEmpty) {
@@ -92,6 +84,8 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    updateProperties(context);
+
     return Scaffold(
       body: Container(
         decoration: getBoxDecoration(),
@@ -105,14 +99,14 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: updateWeatherLocation,
+                    onPressed: () => updateWeatherLocation(context),
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: searchByCity,
+                    onPressed: () => searchByCity(context),
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
@@ -125,11 +119,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '$temperature°',
+                      '$_temperature°',
                       style: kTempTextStyle,
                     ),
                     Text(
-                      condition ?? '',
+                      _condition ?? '',
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -138,7 +132,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  message ?? '',
+                  _message ?? '',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -150,3 +144,4 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
+
