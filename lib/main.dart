@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   String errorMessage = '';
   late WeatherBloc _weatherBloc;
   late PhotoBloc _photoBloc;
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
 
   // I find bundling properties per screen to be very valuable
   // whenever working with several screens this can save a lot of headaches
@@ -95,48 +96,60 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
             theme: ThemeData.dark(),
-            home: Navigator(
-              initialRoute: Routes.LOADING,
-              onGenerateRoute: (RouteSettings settings) {
-                late MaterialPageRoute route;
+            home: WillPopScope(
+              onWillPop: () async {
+                final canPop = _navigatorKey.currentState?.canPop() == true;
 
-                switch (settings.name) {
-                  case Routes.LOADING:
-                    route = NoSlidingRoute(
-                        settings: settings,
-                        builder: (childContext) {
-                          childNav = Navigator.of(childContext);
-                          return LoadingScreen(
-                            getLocation: () {
-                              // this is how we can access provider inside child as well
-                              BlocProvider.of<WeatherBloc>(childContext).add(WeatherByGeolocationEvent());
-                            },
-                            errorMessage: errorMessage,
-                          );
-                        });
-                    break;
-
-                  case Routes.CITY:
-                    route = MaterialPageRoute(
-                        settings: settings,
-                        builder: (childContext) {
-                          childNav = Navigator.of(childContext);
-                          return CityScreen();
-                        });
-                    break;
-
-                  case Routes.LOCATION:
-                    route = MaterialPageRoute(
-                        settings: settings,
-                        builder: (childContext) {
-                          childNav = Navigator.of(childContext);
-                          return LocationScreen(_locationResult);
-                        });
-                    break;
+                if(canPop) {
+                  _navigatorKey.currentState?.maybePop();
                 }
 
-                return route;
+                return !canPop;
               },
+              child: Navigator(
+                key: _navigatorKey,
+                initialRoute: Routes.LOADING,
+                onGenerateRoute: (RouteSettings settings) {
+                  late MaterialPageRoute route;
+
+                  switch (settings.name) {
+                    case Routes.LOADING:
+                      route = NoSlidingRoute(
+                          settings: settings,
+                          builder: (childContext) {
+                            childNav = Navigator.of(childContext);
+                            return LoadingScreen(
+                              getLocation: () {
+                                // this is how we can access provider inside child as well
+                                BlocProvider.of<WeatherBloc>(childContext).add(WeatherByGeolocationEvent());
+                              },
+                              errorMessage: errorMessage,
+                            );
+                          });
+                      break;
+
+                    case Routes.CITY:
+                      route = MaterialPageRoute(
+                          settings: settings,
+                          builder: (childContext) {
+                            childNav = Navigator.of(childContext);
+                            return CityScreen();
+                          });
+                      break;
+
+                    case Routes.LOCATION:
+                      route = MaterialPageRoute(
+                          settings: settings,
+                          builder: (childContext) {
+                            childNav = Navigator.of(childContext);
+                            return LocationScreen(_locationResult);
+                          });
+                      break;
+                  }
+
+                  return route;
+                },
+              ),
             )),
       ),
     );
